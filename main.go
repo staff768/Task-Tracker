@@ -60,7 +60,7 @@ func Add(id int, description string, status string) {
 		if len(data) > 0 {
 			err = json.Unmarshal(data, &tasks)
 			if err != nil {
-				log.Fatal("Ошибка парсинга JSON:", err)
+				log.Fatal("Ошибка парсинга JSON при добавлении:", err)
 			}
 		}
 	}
@@ -70,7 +70,7 @@ func Add(id int, description string, status string) {
 
 	b, err := json.MarshalIndent(tasks, "", "\t")
 	if err != nil {
-		log.Fatal("Ошибка сериализации JSON:", err)
+		log.Fatal("Ошибка сериализации JSON при добавлении:", err)
 	}
 	err = os.WriteFile(dataFile, b, 0644)
 	if err != nil {
@@ -87,7 +87,7 @@ func Delete(id int) {
 	}
 	err = json.Unmarshal(data, &tasks)
 	if err != nil {
-		log.Fatal("Ошибка парсинга JSON:", err)
+		log.Fatal("Ошибка парсинга JSON при удалении:", err)
 	}
 
 	for i :=0 ; i < len(tasks); i++{
@@ -97,7 +97,7 @@ func Delete(id int) {
 	}
 	b, err := json.MarshalIndent(tasks, "", "\t")
 	if err != nil {
-		log.Fatal("Ошибка сериализации JSON:", err)
+		log.Fatal("Ошибка сериализации JSON при удалении:", err)
 	}
 	err = os.WriteFile(dataFile, b, 0644)
 	if err != nil {
@@ -107,11 +107,38 @@ func Delete(id int) {
 	}
 
 }
+func Update(id int, new_description string ){
+	var tasks []Task
+	data, err := os.ReadFile(dataFile)
+	if err != nil {
+		log.Fatal("Ошибка чтения файлы при обновлении:", err)
+	}
+	err = json.Unmarshal(data,&tasks)
+	if err != nil {
+		log.Fatal("Ошибка парсинга JSON при обнолвении:", err)
+	}
+	for i := 0; i < len(tasks); i++{
+		if tasks[i].Id == id{
+			tasks[i].Description = new_description
+		}
+	}
+	b, err := json.MarshalIndent(tasks, "", "\t")
+	if err != nil {
+		log.Fatal("Ошибка сериализации JSON при обновлении :", err)
+	}
+	err = os.WriteFile(dataFile, b, 0644)
+	if err != nil {
+		log.Fatal("Ошибка записи файла при обновлении:", err)
+	} else {
+		fmt.Println("Обновление задачи прошло удачно Id обновленной задачи", id)
+	}
+}
 
 func main() {
 	//Add(1, "got to eat","todo" )
 	//Add(2, "postrat", "in-progress")
+	//Update(1,"sleep until 12 pm")
 	//Add(3, "do homework", "todo")
 	//Add(4, "do homework", "todo")
-	//Delete(2)
+	Delete(1)
 }
