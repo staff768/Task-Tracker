@@ -90,8 +90,8 @@ func Delete(id int) {
 		log.Fatal("Ошибка парсинга JSON при удалении:", err)
 	}
 
-	for i :=0 ; i < len(tasks); i++{
-		if tasks[i].Id == id{
+	for i := 0; i < len(tasks); i++ {
+		if tasks[i].Id == id {
 			tasks = append(tasks[:i], tasks[i+1:]...)
 		}
 	}
@@ -107,18 +107,18 @@ func Delete(id int) {
 	}
 
 }
-func Update(id int, new_description string ){
+func Update(id int, new_description string) {
 	var tasks []Task
 	data, err := os.ReadFile(dataFile)
 	if err != nil {
-		log.Fatal("Ошибка чтения файлы при обновлении:", err)
+		log.Fatal("Ошибка чтения файла при обновлении:", err)
 	}
-	err = json.Unmarshal(data,&tasks)
+	err = json.Unmarshal(data, &tasks)
 	if err != nil {
 		log.Fatal("Ошибка парсинга JSON при обнолвении:", err)
 	}
-	for i := 0; i < len(tasks); i++{
-		if tasks[i].Id == id{
+	for i := 0; i < len(tasks); i++ {
+		if tasks[i].Id == id {
 			tasks[i].Description = new_description
 		}
 	}
@@ -133,12 +133,128 @@ func Update(id int, new_description string ){
 		fmt.Println("Обновление задачи прошло удачно Id обновленной задачи", id)
 	}
 }
+func List(str string){
+	var tasks []Task
+	data,err := os.ReadFile(dataFile)
+	if err != nil{
+		log.Fatal("Ошибка чтения файла при выводе всех задач:", err)
+	}
+	err = json.Unmarshal(data,&tasks)
+	if err !=nil {
+		log.Fatal("Ошибка парсинга JSON при постановке статуса:", err)
+	}
+	switch str {
+	case "":
+		for i:=0; i < len(tasks);i++{
+			fmt.Println(tasks[i]) 
+		}
+	case "todo":
+		for i:=0; i < len(tasks);i++{
+			if tasks[i].Status == "todo"{
+				fmt.Println(tasks[i])
+			}
+		}
+	case "in-progress":
+		for i:=0; i < len(tasks);i++{
+			if tasks[i].Status == "in-progress"{
+				fmt.Println(tasks[i])
+			}
+		}
+	case "done":
+		for i:=0; i < len(tasks);i++{
+			if tasks[i].Status == "done"{
+				fmt.Println(tasks[i])
+			}
+		}
+	}
+}
+func Mark_in_progress(id int){
+	var tasks []Task
+	data,err := os.ReadFile(dataFile)
+	if err != nil {
+		log.Fatal("Ошибка чтения файла при постановке статуса:", err)
+	}
+	err = json.Unmarshal(data, &tasks)
+	if err != nil {
+		log.Fatal("Ошибка парсинга JSON при постановке статуса:", err)
+	}
+	for i := 0; i < len(tasks); i++ {
+		if tasks[i].Id == id {
+			tasks[i].Status = "in-progress"
+		}
+	}
+	b, err := json.MarshalIndent(tasks, "", "\t")
+	if err != nil {
+		log.Fatal("Ошибка сериализации JSON при постановке статуса :", err)
+	}
+	err = os.WriteFile(dataFile, b, 0644)
+	if err != nil {
+		log.Fatal("Ошибка записи файла при постановке статуса:", err)
+	} else {
+		fmt.Println("Обновление задачи прошло удачно Id обновленной задачи", id)
+	}
+}
+func Mark_done(id int){
+	var tasks []Task
+	data,err := os.ReadFile(dataFile)
+	if err != nil {
+		log.Fatal("Ошибка чтения файла при постановке статуса:", err)
+	}
+	err = json.Unmarshal(data, &tasks)
+	if err != nil {
+		log.Fatal("Ошибка парсинга JSON при постановке статуса:", err)
+	}
+	for i := 0; i < len(tasks); i++ {
+		if tasks[i].Id == id {
+			tasks[i].Status = "done"
+		}
+	}
+	b, err := json.MarshalIndent(tasks, "", "\t")
+	if err != nil {
+		log.Fatal("Ошибка сериализации JSON при постановке статуса :", err)
+	}
+	err = os.WriteFile(dataFile, b, 0644)
+	if err != nil {
+		log.Fatal("Ошибка записи файла при постановке статуса:", err)
+	} else {
+		fmt.Println("Обновление задачи прошло удачно Id обновленной задачи", id)
+	}
+}
+func Mark_todo(id int){
+	var tasks []Task
+	data,err := os.ReadFile(dataFile)
+	if err != nil {
+		log.Fatal("Ошибка чтения файла при постановке статуса:", err)
+	}
+	err = json.Unmarshal(data, &tasks)
+	if err != nil {
+		log.Fatal("Ошибка парсинга JSON при постановке статуса:", err)
+	}
+	for i := 0; i < len(tasks); i++ {
+		if tasks[i].Id == id {
+			tasks[i].Status = "todo"
+		}
+	}
+	b, err := json.MarshalIndent(tasks, "", "\t")
+	if err != nil {
+		log.Fatal("Ошибка сериализации JSON при постановке статуса :", err)
+	}
+	err = os.WriteFile(dataFile, b, 0644)
+	if err != nil {
+		log.Fatal("Ошибка записи файла при постановке статуса:", err)
+	} else {
+		fmt.Println("Обновление задачи прошло удачно Id обновленной задачи", id)
+	}
+}
 
 func main() {
+
 	//Add(1, "got to eat","todo" )
 	//Add(2, "postrat", "in-progress")
+	//Mark_todo(1)
+	//List("todo")
 	//Update(1,"sleep until 12 pm")
 	//Add(3, "do homework", "todo")
 	//Add(4, "do homework", "todo")
-	Delete(1)
+	//Delete(1)
 }
